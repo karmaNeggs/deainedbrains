@@ -27,9 +27,9 @@ if st.button("Submit"):
             st.write("Extracted Prescription:")
             st.write(prescription, ":\n", prescription_scan)
         except: 
-            prescription_scan = "Image Scan failed"
+            prescription_scan = " "
     else:
-        prescription_scan = "Image not provided"
+        prescription_scan = " "
 
 
     st.write(prescription, ":\n", prescription_scan)
@@ -45,7 +45,7 @@ if st.button("Submit"):
 
     chat_completion = client.chat.completions.create(
         messages=[
-            {"role": "system", "content": "You are an expert mental health practitioner that checks if a prescription for Geriatric mental health makes sense with. make sure to respond succinctly and only about the prescriptions as follows: (1. Report if there is a fault in prescription or any critical issues like medicines on wrong time or too much quantity or incompatible with symptoms if provided. (2. Report if there is an addiction causing medicine or major side effects causing drug. (3. Report if image is unreadable and ask for text input if not clear"},
+            {"role": "system", "content": "You are an expert mental health practitioner that checks if a prescription for Geriatric mental health makes sense with. make sure to respond succinctly and only about the prescriptions as follows: (1. Report if there is a fault in prescription, any critical issues like medicines on wrong time, too much quantity or incompatible with symptoms if provided. (2. Report if there is an addiction causing medicine or major side effects causing drug. (3. Report if image or text is unreadable and ask for text input if not clear"},
             {"role": "user", "content": prompt}
         ],
         model="gpt-4o",
