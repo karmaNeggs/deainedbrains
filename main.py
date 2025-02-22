@@ -35,26 +35,6 @@ with col2:
         st.link_button("Med Check", "#prescription-check", icon="🔍", type="secondary", disabled=False, use_container_width=False)
         st.link_button("Resources", "#resources", icon="📚", type="secondary", disabled=False, use_container_width=False)
 
-# st.markdown("[Get Your Parents Care Checklist Here >>](https://example.com)")
-# st.markdown("<h1 style='text-align: center;'>Together for better care of our elders back home</h3>", unsafe_allow_html=True)
-# st.write("Some description lorem ipsum about Drained Brains...")
-
-# st.title("Drained Brains")
-# st.subheader("Who we are and what we do?")
-# st.write("Some description lorem ipsum about Drained Brains...")
-
-# Quick link buttons (2 columns)
-# col1, col2 = st.columns(2)
-# with col1:
-#     st.link_button("GMH Newsletter", "https://example.com", icon=None, disabled=False, use_container_width=False)
-#     # st.markdown("[GMH Newsletter](https://example.com)")
-# with col2:
-#     st.link_button("Join Community", "https://example.com", icon=None, disabled=False, use_container_width=False)
-
-# st.markdown("[Get Your Parents Care Checklist Here >>](https://example.com)")
-# st.link_button("GMH Newsletter", "https://example.com", icon=None, disabled=False, use_container_width=False)
-
-
 # -------------------------------------------------------
 # FUNCTION: Renders the Newsletter Form
 # -------------------------------------------------------
@@ -94,7 +74,10 @@ if st.button("Submit"):
     prescription_scan = ""
     if uploaded_image:
         image = Image.open(uploaded_image)
-        prescription_scan = pytesseract.image_to_string(image)
+        try:
+            prescription_scan = pytesseract.image_to_string(image)
+        except Exception as e:
+            st.write("**Prescription scanning error**")
 
     st.write("**Extracted Prescription**:")
     st.write(f"From text input:\n{prescription_text}")
