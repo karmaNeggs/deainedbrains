@@ -6,7 +6,9 @@ from openai import OpenAI
 
 # Set your OpenAI API key securely
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(
+    api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+)
 
 st.title("Prescription Check")
 
