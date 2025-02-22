@@ -23,11 +23,11 @@ if st.button("Submit"):
     if uploaded_image:
         image = Image.open(uploaded_image)
         prescription_scan = pytesseract.image_to_string(image)
-    # else:
-    #     prescription = text_input
-
-    st.write("Extracted Prescription:")
-    st.write(prescription, ":\n", prescription_scan)
+        st.write("Extracted Prescription:")
+        st.write(prescription, ":\n", prescription_scan)
+    else:
+        prescription_scan = "Image not provided or scan failed"
+        st.write(prescription, ":\n", prescription_scan)
 
     # Prepare prompt for LLM
     prompt = (
