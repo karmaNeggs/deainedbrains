@@ -27,10 +27,12 @@ if st.button("Submit"):
             st.write("Extracted Prescription:")
             st.write(prescription, ":\n", prescription_scan)
         except: 
-            pass
+            prescription_scan = "Image Scan failed"
     else:
-        prescription_scan = "Image not provided or scan failed"
-        st.write(prescription, ":\n", prescription_scan)
+        prescription_scan = "Image not provided"
+
+
+    st.write(prescription, ":\n", prescription_scan)
 
     # Prepare prompt for LLM
     prompt = (
