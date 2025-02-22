@@ -21,10 +21,13 @@ if st.button("Submit"):
     prescription = text_input
 
     if uploaded_image:
-        image = Image.open(uploaded_image)
-        prescription_scan = pytesseract.image_to_string(image)
-        st.write("Extracted Prescription:")
-        st.write(prescription, ":\n", prescription_scan)
+        try:
+            image = Image.open(uploaded_image)
+            prescription_scan = pytesseract.image_to_string(image)
+            st.write("Extracted Prescription:")
+            st.write(prescription, ":\n", prescription_scan)
+        except: 
+            pass
     else:
         prescription_scan = "Image not provided or scan failed"
         st.write(prescription, ":\n", prescription_scan)
