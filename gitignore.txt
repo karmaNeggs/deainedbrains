@@ -1,0 +1,8 @@
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.sqlite3
+.env
+
+# Local secrets (do not commit your secrets file)
+.streamlit/secrets.toml
