@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 from PIL import Image
-import pytesseract
+# import pytesseract
 from openai import OpenAI
 
 # Optional: Configure Streamlit page
@@ -80,8 +80,8 @@ if st.button("Submit"):
     # (1) Extract text from image if provided
     prescription_scan = ""
     if uploaded_image:
-        image = Image.open(uploaded_image)
         try:
+            image = Image.open(uploaded_image)
             prescription_scan = pytesseract.image_to_string(image)
         except Exception as e:
             st.write("**Prescription scanning error**")
