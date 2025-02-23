@@ -160,7 +160,7 @@ st.markdown(substack_html, unsafe_allow_html=True)
 
 st.caption(" \n\n Join us in caring :blue[Here] :sunglasses:")
 
-col_reddit, col_insta, col_ = st.columns(2)
+col_reddit, col_insta = st.columns(2)
 with col_reddit:
     reddit_html = """<blockquote class="reddit-embed-bq" style="width: 100%" "height:316px" data-embed-height="240"><a href="https://www.reddit.com/r/drainedbrains/comments/1in6nwt/how_do_you_convince_indian_parents_to_let_you_get/">How do you convince Indian parents to let you get therapy</a><br> by<a href="https://www.reddit.com/user/cosmic_earwax/">u/cosmic_earwax</a> in<a href="https://www.reddit.com/r/drainedbrains/">drainedbrains</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>"""
     st.markdown(reddit_html, unsafe_allow_html=True)
