@@ -1,8 +1,14 @@
-import os
 import streamlit as st
 from PIL import Image
 # import pytesseract
 from openai import OpenAI
+import csv
+import os
+
+# Ensure the directory exists
+os.makedirs("directory", exist_ok=True)
+reviews_csv_file = "directory/reviews.csv"
+ratings_csv_file = "directory/ratings.csv"
 
 # Optional: Configure Streamlit page
 st.set_page_config(
@@ -26,7 +32,10 @@ logo_url = '''<svg width="43" height="41" viewBox="0 0 43 41" fill="none" xmlns=
             </svg>'''
 st.logo(logo_url, icon_image=logo_url)
 
+# -------------------------------------------------------
 # --- TOP SECTION: TITLE, INTRO, QUICK LINKS ---
+# -------------------------------------------------------
+
 st.markdown("<h1 style='text-align: center;'>🌏 Drained Brains 🛫</h1><br><br>", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
@@ -50,23 +59,27 @@ with col2:
         st.link_button("Practitioners", "#doctors-directory", icon="👩🏻‍⚕️", type="secondary", disabled=False, use_container_width=True)
 
 
-# -------------------------------------------------------
 # FUNCTION: Renders the Newsletter Form
-# -------------------------------------------------------
-
 @st.dialog(" ")
 def render_newsletter_form():
 
     st.markdown("Hello 👋, Subscribe to us for Reliable information")
     substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
     st.markdown(substack_html, unsafe_allow_html=True)
-
+    
 st.write("---")
 
 if st.session_state.show_newsletter_form:
     render_newsletter_form()
 
-# --- PRESCRIPTION CHECKER SECTION ---
+# -------------------------------------------------------
+# TOOLS: --- PRESCRIPTION CHECKER SECTION ---
+# -------------------------------------------------------
+
+# Feedback_switch
+if "tool_feedback" not in st.session_state:
+    st.session_state.tool_feedback = ""
+
 st.subheader("Prescription Explainer")
 st.caption("This is a simple tool to understand a :green[Mental health medical prescription]. Summarize your symptoms and enter exact prescription (with dosage) in details:")
 
@@ -102,27 +115,23 @@ if st.button("Submit"):
     )
 
     prompt_with_instructions = (
-        "You are an expert mental health practitioner that checks if a prescription "
-        "for geriatric mental health makes sense. Make sure to respond succinctly and only "
-        "about the prescriptions as follows: "
+        "You are an expert mental health practitioner that explains a prescription"
+        "for geriatric mental health. Respond succinctly and only about the prescriptions as follows: "
         "(1) Report if there is an issue in the prescription. Only critical issues like medicines schedule, quantity, or incompatibility with provided symptoms. "
         "(2) Report if there is an addiction-causing medicine, or any critical side effects"
-        "(3) Short (maximum 50 word) description to How this medicine works or not, to a 10 year old"
-
-        "Ask to re-input the text if the image or text input is uncomprehensible in mental health context or given scope"
-        "strictly stay to the purpose, loose or stray talk is strictly not authorised"
+        "(3) Short (maximum 70 word) description to How this medicine works or not, to a 12 year old"
+        "Stay to the purpose, loose or stray talk is strictly not authorised"
         "Important: Use minumum words, with limit of 200 tokens"
-        "User query"
-        + prompt  # Append the original prompt content
     )
 
     # (3) Call your LLM
     try:
         chat_completion = client.chat.completions.create(
             messages=[
-                {"role": "user", "content": prompt_with_instructions},
+                {"role": "system", "content": prompt_with_instructions},
+                {"role": "user", "content": prompt}
             ],
-            model="o1-mini",
+            model="gpt-4o-mini",
         )
 
         result = chat_completion.choices[0].message.content.strip()
@@ -130,15 +139,42 @@ if st.button("Submit"):
         st.write("Results:")
         st.write(result)
 
+        st.session_state.tool_feedback = "prescription"
+
     except Exception as e:
         st.error(f"Error calling the AI API: {e}")
 
-st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage). It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you do not share any personal identifiable information. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Your safety and confidentiality remain paramount. Be cautious._")
+
+if st.session_state.tool_feedback == "prescription":
+    sentiment_mapping = ["one", "two", "three", "four", "five"]
+    rating = st.feedback("stars",key="prescription")
+    if rating is not None:
+        st.markdown(f"Thank you for {sentiment_mapping[rating]} star(s).")
+        
+        # Prepare row data
+        row = ["prescription", sentiment_mapping[rating]]
+        
+        # Write to CSV (append new row)
+        try:
+            with open(ratings_csv_file, "a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(row)
+            st.success("Thank you for your feedback!")
+            
+        except Exception as e:
+            st.error(f"Error saving feedback: {e}")
+        
+        st.session_state.tool_feedback = ""
+
+    
+st.caption("Disclaimer: _This tool is designed strictly for information, whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage). It is not intended to replace professional medical advice, diagnosis, or treatment. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Please ensure that you do not share any personal identifiable information. Your safety and confidentiality remain paramount. Be vigilant._")
 
 st.write("---")
 
 
-# --- SOS Section ---
+# -------------------------------------------------------
+# TOOLS: --- SOS Section ---
+# -------------------------------------------------------
 
 st.subheader("SOS Chat")
 st.caption("This is a strictly emergency tool to guide the user navigate under a :green[Mental health medical emergency] with self or family. Summarize your symptoms and enter applicable history with prescriptions (with dosage) in details: :red[(Do not share personal identifiable information)]")
@@ -146,13 +182,14 @@ st.caption("This is a strictly emergency tool to guide the user navigate under a
 st.caption("_example: Elder having severe psychosis. what to do?_\n"
             " _Latest prescription: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0_")
 
-
 messages = st.container(height=300)
 chat_input_box = st.container()
 
-sos_chat_history = ""
+if "sos_chat_history" not in st.session_state:
+    st.session_state.sos_chat_history = ""
 
 with chat_input_box:
+
     if prompt := st.chat_input("How can i help ?"):
         messages.chat_message("user").write(prompt)
 
@@ -189,60 +226,152 @@ with chat_input_box:
                 "ALL-INDIA,ROSHNI (Anxiety/Depression/Suicide Prevention),8142020033 / 44,Email: help@roshnihyd.org"
                 "CHANDIGARH,GMCH ASHA Helpline,0172-2660078/2660178,For emergencies involving mental health problems"
 
-                "Chat History:" + sos_chat_history +
-                "\n Users query below:"
-                "---"
-                + prompt
+                "Chat History:" + st.session_state.sos_chat_history
             )
 
-            sos_chat_history = sos_chat_history + "\n User:" + prompt
-
+            
             chat_completion = client.chat.completions.create(
                 messages=[
-                    {"role": "user", "content": prompt_with_instructions}
+                    {"role": "system", "content": prompt_with_instructions},
+                    {"role": "user", "content": prompt}
                 ],
-                model="o1-mini",
+                model="gpt-4o-mini",
             )
 
             result = chat_completion.choices[0].message.content.strip()
-            sos_chat_history = sos_chat_history + "\n Response:" + result
             messages.chat_message("assistant").write(f"{result}")
-            
+            st.session_state.sos_chat_history += "\nUser: " + prompt + "\nResponse: " + result
 
+            st.session_state.tool_feedback = "SOS"
+            
         except Exception as e:
             st.error(f"Error calling the AI API: {e}")
 
-st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage). It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you do not share any personal identifiable information. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Your safety and confidentiality remain paramount. Be cautious._")
+
+if st.session_state.tool_feedback == "SOS":
+    sentiment_mapping = ["one", "two", "three", "four", "five"]
+    rating = st.feedback("stars", key="SOS")
+    if rating is not None:
+        st.markdown(f"Thank you for {sentiment_mapping[rating]} star(s).")
+        
+        # Prepare row data
+        row = ["SOS", sentiment_mapping[rating]]
+        
+        # Write to CSV (append new row)
+        try:
+            with open(ratings_csv_file, "a", newline="", encoding="utf-8") as f:
+                writer = csv.writer(f)
+                writer.writerow(row)
+            st.success("Thank you for your feedback!")
+        except Exception as e:
+            st.error(f"Error saving feedback: {e}")
+
+        st.session_state.tool_feedback = ""
+
+
+st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details. It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you do not share any personal identifiable information. Always seek immediate help from qualified healthcare professionals in case of a medical emergency._")
 st.write("---")
 
-# --- DIRECTORIES & RESOURCES ---
 
+# -------------------------------------------------------
+# TOOLS: --- Feedback Form ---
+# -------------------------------------------------------
+
+# List of top 50 Indian cities (you can adjust the list as needed)
+top_50_cities = [
+    "Mumbai", "Delhi", "Bengaluru", "Hyderabad", "Ahmedabad", "Chennai",
+    "Kolkata", "Pune", "Jaipur", "Surat", "Lucknow", "Kanpur", "Nagpur",
+    "Indore", "Thane", "Bhopal", "Visakhapatnam", "Pimpri-Chinchwad",
+    "Patna", "Vadodara", "Ghaziabad", "Ludhiana", "Agra", "Nashik", "Faridabad",
+    "Meerut", "Rajkot", "Kalyan-Dombivli", "Vasai-Virar", "Varanasi",
+    "Srinagar", "Aurangabad", "Dhanbad", "Amritsar", "Navi Mumbai", "Allahabad",
+    "Ranchi", "Haora", "Coimbatore", "Jabalpur", "Gwalior", "Vijayawada",
+    "Jodhpur", "Madurai", "Raipur", "Kota", "Chandigarh", "Guwahati"
+]
+
+st.header("Therapist/Practitioner Feedback Form")
+
+with st.form("feedback_form", clear_on_submit=True):
+    name = st.text_input("Name of Practitioner/Clinic/Hospital [Required]")
+    
+    practitioner_type = st.selectbox(
+        "Type of Practitioner",
+        options=[
+            "Psychiatrist", "Psychologist", "Therapist", "Caregiver", "Other"
+        ]
+    )
+    
+    city = st.selectbox("City [Required]", options=top_50_cities)
+    
+    good_listener = st.slider("Good listener, gives time and attention [Required]", 0, 5, 3)
+    brings_results = st.slider("Brings Results [Required]", 0, 5, 3)
+    easy_to_reach = st.select_slider(
+        "Easy to reach, available [Required] (or NA)",
+        options=[0, 1, 2, 3, 4, 5, "NA"],
+        value=3
+    )
+    
+    text_feedback = st.text_area("Text Feedback (Optional)")
+    
+    email = st.text_input("Your Email [Required]", type="default")
+    
+    submitted = st.form_submit_button("Submit Feedback")
+    
+    if submitted:
+        # Check required fields
+        if not name or not email:
+            st.error("Please fill in all required fields.")
+        else:
+            # Prepare row data
+            row = [name, practitioner_type, city, good_listener, brings_results, easy_to_reach, text_feedback, email]
+            
+            # Write to CSV (append new row)
+            file_exists = os.path.isfile(reviews_csv_file)
+            try:
+                with open(reviews_csv_file, "a", newline="", encoding="utf-8") as f:
+                    writer = csv.writer(f)
+                    # Write header if file doesn't exist
+                    if not file_exists:
+                        writer.writerow(["Name", "Type", "City", "Good Listener", "Brings Results", "Easy to Reach", "Text Feedback", "Email"])
+                    writer.writerow(row)
+                st.success("Thank you for your feedback!")
+            except Exception as e:
+                st.error(f"Error saving feedback: {e}")
+
+
+# -------------------------------------------------------
+# --- DIRECTORIES & RESOURCES ---
+# -------------------------------------------------------
 
 col1_directory, col2_directory = st.columns(2)
 with col1_directory:
-    st.header("👩🏻‍⚕️")
-    st.subheader("Doctors Directory")
+    st.header("👩🏻‍⚕️ Doctors Directory", anchor = "doctors-directory")
+    # st.subheader("Doctors Directory")
 
 with col2_directory:
     st.link_button("iCALL crowdsourced list of Mental Health Professionals We Can Trust (23rd April 2021)", "https://docs.google.com/spreadsheets/u/2/d/1pzckT6ns2H1IlmwYwJa8EnBh_1u3gRA9cEOoA4zfilc/htmlview#", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("iCALL Helpline", "https://icallhelpline.org/", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("Therapists listing", "https://themindclan.com/professionals/", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("IACP directory", "https://iacp.in/wp-content/uploads/2022/01/directory.pdf", icon=None, type="secondary", disabled=False, use_container_width=True)
+
 st.write("---")
 
 col1_resources, col2_resources = st.columns(2)
 with col1_resources:
-    st.header("📚")
-    st.subheader("Resources")
+    st.header("📚 Resources", anchor = "resources")
 
 with col2_resources:
     st.link_button("Essential elder care checklist", "https://www.talkspace.com/blog/aging-parents-checklist/", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("Mental Health First Aid Guidelines", "https://mhfainternational.org/guidelines/", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("strategies to support parents mental-health for NRIs", "https://www.nilacares.com/blogs/6-effective-strategies-for-nri-children-to-support-their-parents-mental-health-in-india", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("Know your medical prescription", "https://www.1mg.com/articles/know-your-medical-prescription/?srsltid=AfmBOopqxCbk5Kph2oWEQfnQvSvAwuZSTpOzHJ-MPBspQr9JhQ6J59b8", icon=None, type="secondary", disabled=False, use_container_width=True)
+
 st.write("---")
 
+# -------------------------------------------------------
 # --- ABOUT SECTION ---
+# -------------------------------------------------------
+
 st.subheader("About Us")
 st.write(
     "I’ve always had a personal connection to mental health. Growing up, I experienced firsthand the impact of mental illness when my mother, a respected teacher, suffered a sudden attack amid old-school politics. I was in class 10 during my boards, and that long night rushing to the hospital changed everything. In the years that followed, I learned how mental illness can change a person, even when it starts with something as simple as an unexpected health scare.\n"
@@ -253,9 +382,13 @@ st.write(
     "\n"
     "Whether you’re balancing a career while caring for aging parents or supporting them from afar as living abroad- Join me in creating a community to learn from experiences, and find trusted help. Subscribe to our monthly newsletter for updates and helpful tips. Together, we can look after the mental health of our loved ones—because caring for our parents is something we all share ❤️."
 )
+
 st.write("---")
 
+# -------------------------------------------------------
 # --- SOCIAL ICONS / LINKS ---
+# -------------------------------------------------------
+
 st.subheader("Connect with us:")
 
 substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
