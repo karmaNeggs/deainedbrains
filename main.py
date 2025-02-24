@@ -406,6 +406,21 @@ with col_insta:
     st.link_button("Instagram", "https://www.instagram.com/unsubscription.society/?hl=en", icon="🎭", type="secondary", disabled=False, use_container_width=True)
     st.image("directory/download.png", width=None, use_container_width=True)
 
+
+with st.popover("Archive"):
+    st.markdown("📊 Stats")
+    name = st.text_input("Who is asking?")
+
+if name == "notforsale":
+    df = pd.read_csv('directory/reviews.csv')
+    st.table(df)
+
+    df2 = pd.read_csv('directory/ratings.csv')
+    st.table(df2)    
+
+else:
+    st.write("Insights Coming soon")
+
 # --- FOOTER LINKS ---
 st.write("---")
 st.link_button("Contact me", "mailto:vashist.anupam@gmail.com", icon="📩", type="secondary", disabled=False, use_container_width=False)
