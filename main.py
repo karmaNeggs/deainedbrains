@@ -42,7 +42,7 @@ with col1:
 with col2:    
     col2a, col2b = st.columns(2)
     with col2b:
-        st.caption(" \n\n Check out the :green[Toolkit] :sunglasses:")
+        st.caption(" \n\n Check out our :green[Toolkit] :sunglasses:")
         # st.link_button("Community", "https://www.reddit.com/r/drainedbrains/", icon="👩🏼‍❤️‍👨🏻", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Med Check", "#prescription-check", icon="🔍", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Resources", "#resources", icon="📚", type="secondary", disabled=False, use_container_width=True)
@@ -88,8 +88,10 @@ if st.button("Submit"):
             st.write(f"**Extracted Prescription From image:{prescription_scan}")
         except Exception as e:
             prescription_scan = ""
-            st.write(f"Error calling the Image API: {e}")  
+            st.write(f"Error calling the Image API: {e}") 
     
+    else:
+        prescription_scan = ""
 
     # (2) Build your prompt
     prompt = (
@@ -115,6 +117,8 @@ if st.button("Submit"):
     except Exception as e:
         st.error(f"Error calling the AI API: {e}")
 
+st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage). It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you do not share any personal identifiable information. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Your safety and confidentiality remain paramount. Be cautious._")
+
 st.write("---")
 
 
@@ -124,7 +128,7 @@ st.subheader("SOS Chat")
 st.caption("This is a strictly emergency tool to guide the user navigate under a :green[Mental health medical emergency] with self or family. Summarize your symptoms and enter applicable history with prescriptions (with dosage) in details: :red[(Do not share personal identifiable information)]")
 
 st.caption("_example: Elder having severe psychosis. what to do?_\n"
-            "_Latest prescription: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0 _")
+            " _Latest prescription: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0_")
 
 
 messages = st.container(height=300)
@@ -149,6 +153,8 @@ with chat_input_box:
 
         except Exception as e:
             st.error(f"Error calling the AI API: {e}")
+
+st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage). It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you do not share any personal identifiable information. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Your safety and confidentiality remain paramount. Be cautious._")
 
 st.write("---")
 
@@ -190,28 +196,28 @@ st.write(
     "\n"
     "Whether you’re balancing a career while caring for aging parents or supporting them from afar as an NRI, you’re not alone. With our support bot, engaging newsletter, and anonymous case broadcasts, we’re here to help you reclaim dignity and spark the change our parents deserve ❤️. Join us, and together, let’s revolutionize care for those who gave us everything."
 )
+st.write("---")
 
 # --- SOCIAL ICONS / LINKS ---
 st.subheader("Connect with us:")
 
 substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
 st.markdown(substack_html, unsafe_allow_html=True)
+st.write("\n ")
+st.write("\n ")
+st.write(" \n\n Stay connected with :blue[with our community] :sunglasses:")
 
 
 st.caption(" \n\n Join us in caring :blue[Here] :sunglasses:")
 
-col_reddit, col_insta = st.columns(2)
-with col_substack:
-    # reddit_html = """<blockquote class="reddit-embed-bq" style="width: 100%" "height:316px" data-embed-height="240"><a href="https://www.reddit.com/r/drainedbrains/comments/1in6nwt/how_do_you_convince_indian_parents_to_let_you_get/">How do you convince Indian parents to let you get therapy</a><br> by<a href="https://www.reddit.com/user/cosmic_earwax/">u/cosmic_earwax</a> in<a href="https://www.reddit.com/r/drainedbrains/">drainedbrains</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>"""
-    # st.markdown(reddit_html, unsafe_allow_html=True)
-    st.image("directory/Background Color - square.jpg", width=None, use_container_width=True)
-    # st.image("https://static.streamlit.io/examples/cat.jpg")
-    st.link_button("Reddit", "https://drainedbrains.substack.com/", icon="📣", type="secondary", disabled=False, use_container_width=True)
+col_substack_2, col_insta = st.columns(2)
+with col_substack_2:
+    st.link_button("Blog and Newsletter", "https://drainedbrains.substack.com/", icon="📣", type="secondary", disabled=False, use_container_width=True)
+    st.image("directory/sub_qrcode.svg", width=None, use_container_width=True)
 
 with col_insta:
-    st.image("directory/download.png", width=None, use_container_width=True)
     st.link_button("Instagram", "https://www.instagram.com/unsubscription.society/?hl=en", icon="🎭", type="secondary", disabled=False, use_container_width=True)
-    # st.link_button("Facebook", "#resources", icon="👩🏼‍❤️‍👨🏻", type="secondary", disabled=False, use_container_width=True)
+    st.image("directory/download.png", width=None, use_container_width=True)
 
 
 # --- FOOTER LINKS ---
