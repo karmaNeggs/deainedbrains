@@ -1,5 +1,6 @@
 import streamlit as st
 from PIL import Image
+import pandas as pd
 # import pytesseract
 from openai import OpenAI
 import csv
