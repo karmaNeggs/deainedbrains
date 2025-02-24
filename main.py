@@ -31,9 +31,9 @@ st.markdown("<h1 style='text-align: center;'>🌏 Drained Brains 🛫</h1><br><b
 
 col1, col2 = st.columns(2)
 with col1:
-    st.subheader("Together ⚓ for better care of our elders back home 👵🏼👴🏼")
+    st.subheader("⚓ Together for better care of our elders back home 👵🏼👴🏼")
     # st.caption("_italics_ :green[Care]")
-    st.caption("_Join us to understand and manage mental healthcare for elders living away from their adult kids_")
+    st.caption("_Join to understand and manage mental healthcare for elders living away back home_")
     st.session_state.show_newsletter_form = False
 
     if st.button("Subscribe to our Newsletter", type="primary"):
@@ -43,7 +43,7 @@ with col2:
     col2a, col2b = st.columns(2)
     with col2b:
         st.caption(" \n\n Check out the :green[Toolkit] :sunglasses:")
-        st.link_button("Community", "https://www.reddit.com/r/drainedbrains/", icon="👩🏼‍❤️‍👨🏻", type="secondary", disabled=False, use_container_width=True)
+        # st.link_button("Community", "https://www.reddit.com/r/drainedbrains/", icon="👩🏼‍❤️‍👨🏻", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Med Check", "#prescription-check", icon="🔍", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Resources", "#resources", icon="📚", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Practitioners", "#doctors-directory", icon="👩🏻‍⚕️", type="secondary", disabled=False, use_container_width=True)
@@ -60,15 +60,17 @@ def render_newsletter_form():
     substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
     st.markdown(substack_html, unsafe_allow_html=True)
 
-
 st.write("---")
 
 if st.session_state.show_newsletter_form:
     render_newsletter_form()
 
 # --- PRESCRIPTION CHECKER SECTION ---
-st.subheader("Prescription Check")
-st.write("Summarize your symptoms and enter exact prescription (with dosage) in detail:")
+st.subheader("Prescription Explainer")
+st.caption("This is a simple tool to understand a :green[Mental health medical prescription]. Summarize your symptoms and enter exact prescription (with dosage) in details:")
+
+st.caption("_example: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0, Ibuprofen 400mg SOS._\n"
+            " _symptoms of restlessness, mood swings and dietary issues_")
 
 prescription_text = st.text_area("Prescription Text (please mask personal details):")
 uploaded_image = st.file_uploader(
@@ -78,17 +80,16 @@ uploaded_image = st.file_uploader(
 
 if st.button("Submit"):
     # (1) Extract text from image if provided
-    prescription_scan = ""
+    
     if uploaded_image:
         try:
             image = Image.open(uploaded_image)
             prescription_scan = pytesseract.image_to_string(image)
+            st.write(f"**Extracted Prescription From image:{prescription_scan}")
         except Exception as e:
-            st.write("**Prescription scanning error**")
-
-    st.write("**Extracted Prescription**:")
-    st.write(f"From text input:\n{prescription_text}")
-    st.write(f"From image:\n{prescription_scan}")
+            prescription_scan = ""
+            st.write(f"Error calling the Image API: {e}")  
+    
 
     # (2) Build your prompt
     prompt = (
@@ -117,26 +118,65 @@ if st.button("Submit"):
 st.write("---")
 
 
+# --- SOS Section ---
 
+st.subheader("SOS Chat")
+st.caption("This is a strictly emergency tool to guide the user navigate under a :green[Mental health medical emergency] with self or family. Summarize your symptoms and enter applicable history with prescriptions (with dosage) in details: :red[(Do not share personal identifiable information)]")
+
+st.caption("_example: Elder having severe psychosis. what to do?_\n"
+            "_Latest prescription: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0 _")
+
+
+messages = st.container(height=300)
+chat_input_box = st.container()
+
+with chat_input_box:
+    if prompt := st.chat_input("How can i help ?"):
+        messages.chat_message("user").write(prompt)
+
+        # (3) Call your LLM
+        try:
+            chat_completion = client.chat.completions.create(
+                messages=[
+                    {"role": "system", "content": "You are an expert mental health practitioner that guides the user to medical helpline using following info: helpline number : 100. "},
+                    {"role": "user", "content": prompt}
+                ],
+                model="gpt-4o",
+            )
+
+            result = chat_completion.choices[0].message.content.strip()
+            messages.chat_message("assistant").write(f"{result}")
+
+        except Exception as e:
+            st.error(f"Error calling the AI API: {e}")
+
+st.write("---")
 
 # --- DIRECTORIES & RESOURCES ---
 
 
-col1_directory, col_resources = st.columns(2)
+col1_directory, col2_directory = st.columns(2)
 with col1_directory:
+    st.header("👩🏻‍⚕️")
     st.subheader("Doctors Directory")
-    st.markdown("- [iCALL's crowdsourced list of Mental Health Professionals We Can Trust (23rd April 2021)](https://docs.google.com/spreadsheets/u/2/d/1pzckT6ns2H1IlmwYwJa8EnBh_1u3gRA9cEOoA4zfilc/htmlview#)")
-    st.markdown("- [iCALL's Helpline](https://icallhelpline.org/)")
-    st.markdown("- [Therapists listing](https://themindclan.com/professionals/)")
-    st.markdown("- [IACP directory](https://iacp.in/wp-content/uploads/2022/01/directory.pdf)")
 
-with col_resources:
+with col2_directory:
+    st.link_button("iCALL crowdsourced list of Mental Health Professionals We Can Trust (23rd April 2021)", "https://docs.google.com/spreadsheets/u/2/d/1pzckT6ns2H1IlmwYwJa8EnBh_1u3gRA9cEOoA4zfilc/htmlview#", icon=None, type="secondary", disabled=False, use_container_width=True)
+    st.link_button("iCALL Helpline", "https://icallhelpline.org/", icon=None, type="secondary", disabled=False, use_container_width=True)
+    st.link_button("Therapists listing", "https://themindclan.com/professionals/", icon=None, type="secondary", disabled=False, use_container_width=True)
+    st.link_button("IACP directory", "https://iacp.in/wp-content/uploads/2022/01/directory.pdf", icon=None, type="secondary", disabled=False, use_container_width=True)
+st.write("---")
+
+col1_resources, col2_resources = st.columns(2)
+with col1_resources:
+    st.header("📚")
     st.subheader("Resources")
-    st.markdown("- [Essential elder care checklist](https://www.talkspace.com/blog/aging-parents-checklist/)")
-    st.markdown("- [Know your nedical prescription](https://www.1mg.com/articles/know-your-medical-prescription/?srsltid=AfmBOopqxCbk5Kph2oWEQfnQvSvAwuZSTpOzHJ-MPBspQr9JhQ6J59b8)")
-    st.markdown("- [Blog article 3](https://example.com)")
-    st.markdown("- [Blog article 4](https://example.com)")
 
+with col2_resources:
+    st.link_button("Essential elder care checklist", "https://www.talkspace.com/blog/aging-parents-checklist/", icon=None, type="secondary", disabled=False, use_container_width=True)
+    st.link_button("Mental Health First Aid Guidelines", "https://mhfainternational.org/guidelines/", icon=None, type="secondary", disabled=False, use_container_width=True)
+    st.link_button("strategies to support parents mental-health for NRIs", "https://www.nilacares.com/blogs/6-effective-strategies-for-nri-children-to-support-their-parents-mental-health-in-india", icon=None, type="secondary", disabled=False, use_container_width=True)
+    st.link_button("Know your medical prescription", "https://www.1mg.com/articles/know-your-medical-prescription/?srsltid=AfmBOopqxCbk5Kph2oWEQfnQvSvAwuZSTpOzHJ-MPBspQr9JhQ6J59b8", icon=None, type="secondary", disabled=False, use_container_width=True)
 st.write("---")
 
 # --- ABOUT SECTION ---
@@ -161,12 +201,12 @@ st.markdown(substack_html, unsafe_allow_html=True)
 st.caption(" \n\n Join us in caring :blue[Here] :sunglasses:")
 
 col_reddit, col_insta = st.columns(2)
-with col_reddit:
-    reddit_html = """<blockquote class="reddit-embed-bq" style="width: 100%" "height:316px" data-embed-height="240"><a href="https://www.reddit.com/r/drainedbrains/comments/1in6nwt/how_do_you_convince_indian_parents_to_let_you_get/">How do you convince Indian parents to let you get therapy</a><br> by<a href="https://www.reddit.com/user/cosmic_earwax/">u/cosmic_earwax</a> in<a href="https://www.reddit.com/r/drainedbrains/">drainedbrains</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>"""
-    st.markdown(reddit_html, unsafe_allow_html=True)
-
+with col_substack:
+    # reddit_html = """<blockquote class="reddit-embed-bq" style="width: 100%" "height:316px" data-embed-height="240"><a href="https://www.reddit.com/r/drainedbrains/comments/1in6nwt/how_do_you_convince_indian_parents_to_let_you_get/">How do you convince Indian parents to let you get therapy</a><br> by<a href="https://www.reddit.com/user/cosmic_earwax/">u/cosmic_earwax</a> in<a href="https://www.reddit.com/r/drainedbrains/">drainedbrains</a></blockquote><script async="" src="https://embed.reddit.com/widgets.js" charset="UTF-8"></script>"""
+    # st.markdown(reddit_html, unsafe_allow_html=True)
+    st.image("directory/Background Color - square.jpg", width=None, use_container_width=True)
     # st.image("https://static.streamlit.io/examples/cat.jpg")
-    st.link_button("Reddit", "https://www.reddit.com/r/drainedbrains/", icon="📣", type="secondary", disabled=False, use_container_width=True)
+    st.link_button("Reddit", "https://drainedbrains.substack.com/", icon="📣", type="secondary", disabled=False, use_container_width=True)
 
 with col_insta:
     st.image("directory/download.png", width=None, use_container_width=True)
