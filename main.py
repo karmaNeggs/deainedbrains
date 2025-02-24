@@ -93,21 +93,36 @@ if st.button("Submit"):
     
     else:
         prescription_scan = ""
-
+    
     # (2) Build your prompt
+
     prompt = (
         f"Prescription:\n{prescription_text}\n\n"
         f"Prescription reference read from image (unreliable):\n{prescription_scan}"
+    )
+
+    prompt_with_instructions = (
+        "You are an expert mental health practitioner that checks if a prescription "
+        "for geriatric mental health makes sense. Make sure to respond succinctly and only "
+        "about the prescriptions as follows: "
+        "(1) Report if there is an issue in the prescription. Only critical issues like medicines schedule, quantity, or incompatibility with provided symptoms. "
+        "(2) Report if there is an addiction-causing medicine, or any critical side effects"
+        "(3) Short (maximum 50 word) description to How this medicine works or not, to a 10 year old"
+
+        "Ask to re-input the text if the image or text input is uncomprehensible in mental health context or given scope"
+        "strictly stay to the purpose, loose or stray talk is strictly not authorised"
+        "Important: Use minumum words, with limit of 200 tokens"
+        "User query"
+        + prompt  # Append the original prompt content
     )
 
     # (3) Call your LLM
     try:
         chat_completion = client.chat.completions.create(
             messages=[
-                {"role": "system", "content": "You are an expert mental health practitioner that checks if a prescription for Geriatric mental health makes sense with. make sure to respond succinctly and only about the prescriptions as follows: (1. Report if there is a fault in prescription, any critical issues like medicines on wrong time, too much quantity or incompatible with symptoms if provided. (2. Report if there is an addiction causing medicine or major side effects causing drug. (3. Report if image or text is unreadable and ask for text input if not clear"},
-                {"role": "user", "content": prompt}
+                {"role": "user", "content": prompt_with_instructions},
             ],
-            model="gpt-4o",
+            model="o1-mini",
         )
 
         result = chat_completion.choices[0].message.content.strip()
@@ -135,28 +150,69 @@ st.caption("_example: Elder having severe psychosis. what to do?_\n"
 messages = st.container(height=300)
 chat_input_box = st.container()
 
+sos_chat_history = ""
+
 with chat_input_box:
     if prompt := st.chat_input("How can i help ?"):
         messages.chat_message("user").write(prompt)
 
         # (3) Call your LLM
         try:
+            prompt_with_instructions = (
+                "You are an empathetic expert that guides the user in mental health emergency to help using the following info:"
+                "Mental health first aid"
+
+                "Ask to re-input the text if the image or text input is uncomprehensible in mental health context"
+                "strictly stay to the purpose, loose or stray talk is strictly not authorised, empathatic talk for handling emergency situation is allowed"
+                "do not suggest hospital unless specified. DO not spit out whole list of resouces"
+
+                "Important: Use minumum words, with limit of 200 tokens"
+
+                "LOCATION,ORGANISATION,NUMBER,HOURS OF OPERATION + NOTES"
+                "ALL-INDIA,Governments Tele Manas,14416 OR 1800 891 4416,https://telemanas.mohfw.gov.in/home"
+                "ALL-INDIA,Vandrevala Foundation,+919999666555,24x7; Email: help@vandrevalafoundation.com"
+                "ALL-INDIA,Fortis Hospital National Helpline,91-8376804102,24x7 / Multilingual"
+                "BANGALORE,SAHAI,080-25497777,"
+                "CHENNAI,SNEHA,044 2464 0050,Email: help@snehaindia.org"
+                "DELHI,SANJIVINI SOCIETY FOR MENTAL HEALTH,01140769002, 01141092787, 01124311918, 01124318883, 01143001456,Daily: 10 AM to 4 PM"
+                "GANGTOK,SIKKIM HELPLINE NUMBER,1800-3453225 / 03592-202111,24/7"
+                "HYDERABAD,ONE LIFE,78930 78930,24/7"
+                "KOLKATA,DEFEAT DEPRESSION,9830027975,"
+                "ALL-INDIA,LIFELINE FOUNDATION,+91 9088030303 & 03340447437,10 AM to 10 PM; Email: contact@lifelinefoundation.in; Site: www.lifelinefoundation.in"
+                "MUMBAI,AASRA,+91-9820466726,24/7; Languages: English, Hindi"
+                "MUMBAI,SAMARITANS,84229 84528 / 84229 84529 / 84229 84530,Daily 5 PM to 8 PM; Email: talk2samaritans@gmail.com;"
+                "ALL-INDIA,BMC-MPOWER,1800 120 820050,24/7; Handles anxiety, depression, financial worries, COVID-19 related calls"
+                "ALL-INDIA,iCall (TISS School of Human Ecology),022-25521111,Mon-Sat: 8 AM to 10 PM; Email: icall@tiss.edu"
+                "ALL-INDIA,PSYCHO-SOCIAL FIRST AID COUNSELLING HELPLINE: Voice that Cares,8448-8448-45,Pan-India; 9 AM to 9 PM; Languages: Hindi, English"
+                "ALL-INDIA,JEEVAN AASTHA HELPLINE,1800-233-330,Email: sp-gnr@gujarat.govt.in"
+                "ALL-INDIA,CONNECTING INDIA,9922001122,"
+                "ALL-INDIA,ROSHNI (Anxiety/Depression/Suicide Prevention),8142020033 / 44,Email: help@roshnihyd.org"
+                "CHANDIGARH,GMCH ASHA Helpline,0172-2660078/2660178,For emergencies involving mental health problems"
+
+                "Chat History:" + sos_chat_history +
+                "\n Users query below:"
+                "---"
+                + prompt
+            )
+
+            sos_chat_history = sos_chat_history + "\n User:" + prompt
+
             chat_completion = client.chat.completions.create(
                 messages=[
-                    {"role": "system", "content": "You are an expert mental health practitioner that guides the user to medical helpline using following info: helpline number : 100. "},
-                    {"role": "user", "content": prompt}
+                    {"role": "user", "content": prompt_with_instructions}
                 ],
-                model="gpt-4o",
+                model="o1-mini",
             )
 
             result = chat_completion.choices[0].message.content.strip()
+            sos_chat_history = sos_chat_history + "\n Response:" + result
             messages.chat_message("assistant").write(f"{result}")
+            
 
         except Exception as e:
             st.error(f"Error calling the AI API: {e}")
 
 st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage). It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you do not share any personal identifiable information. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Your safety and confidentiality remain paramount. Be cautious._")
-
 st.write("---")
 
 # --- DIRECTORIES & RESOURCES ---
