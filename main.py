@@ -42,9 +42,10 @@ with col1:
 with col2:    
     col2a, col2b = st.columns(2)
     with col2b:
-        st.caption(" \n\n Check out our :green[Toolkit] :sunglasses:")
+        st.caption(" \n\n Check out the :green[Toolkit] :sunglasses:")
         # st.link_button("Community", "https://www.reddit.com/r/drainedbrains/", icon="👩🏼‍❤️‍👨🏻", type="secondary", disabled=False, use_container_width=True)
-        st.link_button("Med Check", "#prescription-check", icon="🔍", type="secondary", disabled=False, use_container_width=True)
+        st.link_button("Meds Check", "#prescription-explainer", icon="🔍", type="secondary", disabled=False, use_container_width=True)
+        st.link_button("SOS bot", "#sos-chat", icon="🆘", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Resources", "#resources", icon="📚", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Practitioners", "#doctors-directory", icon="👩🏻‍⚕️", type="secondary", disabled=False, use_container_width=True)
 
@@ -188,13 +189,13 @@ st.write("---")
 # --- ABOUT SECTION ---
 st.subheader("About Us")
 st.write(
-    "At our core, we believe that the mental well-being of our elders matters—and it’s time we stand up for \n"
+    "I’ve always had a personal connection to mental health. Growing up, I experienced firsthand the impact of mental illness when my mother, a respected teacher, suffered a sudden attack amid old-school politics. I was in class 10 during my boards, and that long night rushing to the hospital changed everything. In the years that followed, I learned how mental illness can change a person, even when it starts with something as simple as an unexpected health scare.\n"
     "\n"
-    "Welcome to our community. We are a passionate movement dedicated to transforming the mental health care of our beloved elders. Born from personal heartbreak and lived experience, we know too well the devastating impact of neglect, misprescription, and isolation on our parents—our pillars of strength. When those who cared for us are left to suffer in silence, it ignites an anger we simply cannot ignore 😡.\n"
+    "I went on to study engineering and then Data, spending over a decade in the field of products, strategy, and business. But my journey through user behaviour and data science led me to understanding psychology and mental health. Through the ups and downs of life, I have witnessed the challenges many older adults face. I’ve seen parents struggling with mental health disorders, dealing with confusing prescriptions, mixed medications, and new issues brought on by modern life: screen addiction, loneliness, depression, post-retirement challenges, and even the risks of scams.\n"
     "\n"
-    "Our mission is clear: to offer accessible, reliable, and compassionate medical support for geriatric mental health. We empower you with a comprehensive toolkit featuring a second opinion checker and a checklist to monitor everyday well-being, alongside our thought-provoking book, Un-subscription Society. Stay informed and connected through our channels on Reddit, Instagram, Facebook, and TikTok—where expert advice meets heartfelt stories.\n"
+    "This initiative is my simple effort to help adults take care of their parents’ mental health. I understand how important it is to have accessible and reliable support, especially when finding the right doctor or getting a second opinion feels overwhelming. That’s why I have put together a toolkit that includes easy-to-use tools like a prescription explainer and an SOS chat for moments of crisis, along with practical checklists for daily care routines.\n"
     "\n"
-    "Whether you’re balancing a career while caring for aging parents or supporting them from afar as an NRI, you’re not alone. With our support bot, engaging newsletter, and anonymous case broadcasts, we’re here to help you reclaim dignity and spark the change our parents deserve ❤️. Join us, and together, let’s revolutionize care for those who gave us everything."
+    "Whether you’re balancing a career while caring for aging parents or supporting them from afar as living abroad- Join me in creating a community to learn from experiences, and find trusted help. Subscribe to our monthly newsletter for updates and helpful tips. Together, we can look after the mental health of our loved ones—because caring for our parents is something we all share ❤️."
 )
 st.write("---")
 
@@ -205,10 +206,7 @@ substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=
 st.markdown(substack_html, unsafe_allow_html=True)
 st.write("\n ")
 st.write("\n ")
-st.write(" \n\n Stay connected with :blue[with our community] :sunglasses:")
-
-
-st.caption(" \n\n Join us in caring :blue[Here] :sunglasses:")
+st.write(" \n\n Scan to stay connected with :blue[with our community] :sunglasses:")
 
 col_substack_2, col_insta = st.columns(2)
 with col_substack_2:
@@ -219,7 +217,7 @@ with col_insta:
     st.link_button("Instagram", "https://www.instagram.com/unsubscription.society/?hl=en", icon="🎭", type="secondary", disabled=False, use_container_width=True)
     st.image("directory/download.png", width=None, use_container_width=True)
 
-
 # --- FOOTER LINKS ---
 st.write("---")
-st.markdown("[RESOURCES](https://example.com) | [About us](https://example.com) | [Blog](https://example.com) | [Disclaimers](https://example.com) | [T & C](https://example.com)")
+st.link_button("Contact me", "mailto:vashist.anupam@gmail.com", icon="📩", type="secondary", disabled=False, use_container_width=False)
+st.link_button("Disclaimer and TC", "https://drainedbrains.substack.com/p/terms-of-usage", icon="⁉️", type="secondary", disabled=False, use_container_width=False)
