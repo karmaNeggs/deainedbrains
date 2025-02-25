@@ -293,6 +293,7 @@ top_50_cities = [
 ]
 
 st.subheader("Practitioner Feedback")
+st.caption("Finding a reliable help is hard, specially for a personal issue like therapy and mental health. We are crowdsourcing genuine reviews of Medical practitioners, to use this data with SOS bot to guide users to nearest and best help. Gooad and Bad reviews are welcome")
 
 with st.form("feedback_form", clear_on_submit=True):
     name = st.text_input("Name of Practitioner or Clinic/Hospital [Required]")
