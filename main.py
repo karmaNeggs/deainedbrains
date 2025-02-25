@@ -394,13 +394,12 @@ st.write("---")
 # --- SOCIAL ICONS / LINKS ---
 # -------------------------------------------------------
 
-st.subheader("Connect with us:")
+st.write(" \n\n Join to :green[stay connected] :sunglasses:")
 
 substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="150" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
 st.markdown(substack_html, unsafe_allow_html=True)
 st.write("\n ")
 st.write("\n ")
-st.write(" \n\n Scan to stay connected with :blue[with our community] :sunglasses:")
 
 col_substack_2, col_insta = st.columns(2)
 with col_substack_2:
