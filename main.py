@@ -58,7 +58,7 @@ with col2:
         # st.link_button("Community", "https://www.reddit.com/r/drainedbrains/", icon="👩🏼‍❤️‍👨🏻", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Meds Check", "#prescription-explainer", icon="🔍", type="secondary", disabled=False, use_container_width=True)
         st.link_button("SOS bot", "#sos-bot", icon="🆘", type="secondary", disabled=False, use_container_width=True)
-        st.link_button("Practitioners", "#practitioner-feedback", icon="👩🏻‍⚕️", type="secondary", disabled=False, use_container_width=True)
+        st.link_button("Doc report", "#practitioner-feedback", icon="👩🏻‍⚕️", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Resources", "#resources", icon="📚", type="secondary", disabled=False, use_container_width=True)
 
 # FUNCTION: Renders the Newsletter Form
@@ -377,7 +377,7 @@ st.write("---")
 # --- ABOUT SECTION ---
 # -------------------------------------------------------
 
-st.subheader("About Us")
+st.subheader("About")
 st.write(
     "Growing up, I experienced firsthand the impact of mental illness in my family between old-school work politics. I was in class 10 during my boards, and one long night of rushing to the hospital changed everything. In the years that followed, I learned how mental illness can change a person, and how to truly navigate the tricky landscape of elders mental health in our society.\n"
     "\n"
@@ -385,7 +385,7 @@ st.write(
     "\n"
     " It is important to have accessible and reliable doctors and basic understanding of the treatment. That’s why I have put together a toolkit that includes easy-to-use tools like a prescription explainer, an SOS chat for moments of crisis, and a Doctors review collection to later use it as trusted directory \n"
     "\n"
-    "This initiative is my simple effort to help us adults take care of our parents’ mental health. While balancing a career, caring for aging parents from as afar as living abroad- Join me to learn from our experiences and find trusted help ❤️."
+    "This initiative is my simple effort to help us adults take care of our parents’ mental health. While balancing a career, caring for aging parents from as afar as living abroad- Join me to learn from our experiences and find trusted help."
 )
 
 st.write("---")
@@ -394,7 +394,7 @@ st.write("---")
 # --- SOCIAL ICONS / LINKS ---
 # -------------------------------------------------------
 
-st.write(" \n\n Join to :green[stay connected] :sunglasses:")
+st.write(" \n\n Join to :green[stay connected] ❤️")
 
 substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="150" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
 st.markdown(substack_html, unsafe_allow_html=True)
