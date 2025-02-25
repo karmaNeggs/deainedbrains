@@ -84,7 +84,7 @@ if "tool_feedback" not in st.session_state:
     st.session_state.tool_feedback = ""
 
 st.subheader("Prescription Explainer")
-st.caption("This is a simple tool to understand a :green[Mental health medical prescription]. Summarize your symptoms and enter exact prescription (with dosage) in details:")
+st.caption("This is a simple tool to understand a :green[Mental health medical prescription]. Summarize the symptoms and enter exact prescription (with dosage) in details:")
 
 st.caption("_example: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0, Ibuprofen 400mg SOS._\n"
             " _symptoms of restlessness, mood swings and dietary issues_")
@@ -180,7 +180,7 @@ st.write("---")
 # -------------------------------------------------------
 
 st.subheader("SOS Bot")
-st.caption("This is a strictly emergency tool to guide the user navigate under a :green[Mental health medical emergency] with self or family. Summarize your symptoms and enter applicable history with prescriptions (with dosage) in details.")
+st.caption("This is simple, strictly emergency tool to guide the user in a :green[Mental health medical emergency] with self or family. Summarize your symptoms and enter applicable history with prescriptions (with dosage) in details.")
 
 st.caption("_example: Elder having severe psychosis. what to do?_\n"
             " _Latest prescription: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0_")
@@ -200,12 +200,11 @@ with chat_input_box:
         try:
             prompt_with_instructions = (
                 "You are an empathetic expert that guides the user in mental health emergency to help using the following info:"
-                "Mental health first aid"
-
+                "Give Mental health first aid"
                 "Ask to re-input the text if the image or text input is uncomprehensible in mental health context"
                 "strictly stay to the purpose, loose or stray talk is strictly not authorised, empathatic talk for handling emergency situation is allowed"
-                "do not suggest hospital unless specified. DO not spit out whole list of resouces"
-
+                "Ask location before suggesting hospital (near location only), do not suggest unless specified"
+                "National helpline: ALL-INDIA,Governments Tele Manas,14416 OR 1800 891 4416,https://telemanas.mohfw.gov.in/home"
                 "Important: Use minumum words, with limit of 200 tokens"
 
                 "LOCATION,ORGANISATION,NUMBER,HOURS OF OPERATION + NOTES"
@@ -293,7 +292,7 @@ top_50_cities = [
 ]
 
 st.subheader("Practitioner Feedback")
-st.caption("Finding a reliable help is hard, specially for a personal issue like therapy and mental health. We are crowdsourcing genuine reviews of Medical practitioners, to use this data with SOS bot to guide users to nearest and best help. Gooad and Bad reviews are welcome")
+st.caption("Finding a reliable help is hard, specially for a personal issue like therapy and mental health. We are crowdsourcing genuine reviews of Medical practitioners, to use this data with SOS bot to guide users to nearest and best help. Good and Bad reviews are welcome")
 
 with st.form("feedback_form", clear_on_submit=True):
     name = st.text_input("Name of Practitioner or Clinic/Hospital [Required]")
