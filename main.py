@@ -57,10 +57,9 @@ with col2:
         st.caption(" \n\n Check out the :green[Toolkit] :sunglasses:")
         # st.link_button("Community", "https://www.reddit.com/r/drainedbrains/", icon="👩🏼‍❤️‍👨🏻", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Meds Check", "#prescription-explainer", icon="🔍", type="secondary", disabled=False, use_container_width=True)
-        st.link_button("SOS bot", "#sos-chat", icon="🆘", type="secondary", disabled=False, use_container_width=True)
+        st.link_button("SOS bot", "#sos-bot", icon="🆘", type="secondary", disabled=False, use_container_width=True)
+        st.link_button("Practitioners", "#practitioner-feedback", icon="👩🏻‍⚕️", type="secondary", disabled=False, use_container_width=True)
         st.link_button("Resources", "#resources", icon="📚", type="secondary", disabled=False, use_container_width=True)
-        st.link_button("Practitioners", "#doctors-directory", icon="👩🏻‍⚕️", type="secondary", disabled=False, use_container_width=True)
-
 
 # FUNCTION: Renders the Newsletter Form
 @st.dialog(" ")
@@ -69,7 +68,8 @@ def render_newsletter_form():
     st.markdown("Hello 👋, Subscribe to us for Reliable information")
     substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
     st.markdown(substack_html, unsafe_allow_html=True)
-    
+
+
 st.write("---")
 
 if st.session_state.show_newsletter_form:
@@ -170,7 +170,7 @@ if st.session_state.tool_feedback == "prescription":
         st.session_state.tool_feedback = ""
 
     
-st.caption("Disclaimer: _This tool is designed strictly for information, whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage). It is not intended to replace professional medical advice, diagnosis, or treatment. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Please ensure that you do not share any personal identifiable information. Your safety and confidentiality remain paramount. Be vigilant._")
+st.caption(":red[Disclaimer]: _This tool is designed strictly for users information, for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details (including dosage) Not intended to replace professional medical advice, diagnosis, or treatment. Always seek immediate help from qualified healthcare professionals in case of a medical emergency. Please :red[do not share any personal identifiable information]. Your safety and confidentiality remain paramount._")
 
 st.write("---")
 
@@ -179,8 +179,8 @@ st.write("---")
 # TOOLS: --- SOS Section ---
 # -------------------------------------------------------
 
-st.subheader("SOS Chat")
-st.caption("This is a strictly emergency tool to guide the user navigate under a :green[Mental health medical emergency] with self or family. Summarize your symptoms and enter applicable history with prescriptions (with dosage) in details: :red[(Do not share personal identifiable information)]")
+st.subheader("SOS Bot")
+st.caption("This is a strictly emergency tool to guide the user navigate under a :green[Mental health medical emergency] with self or family. Summarize your symptoms and enter applicable history with prescriptions (with dosage) in details.")
 
 st.caption("_example: Elder having severe psychosis. what to do?_\n"
             " _Latest prescription: Escitalopram 10mg 1-0-0, Panto 1 40 mg 1-0-0_")
@@ -272,7 +272,7 @@ if st.session_state.tool_feedback == "SOS":
         st.session_state.tool_feedback = ""
 
 
-st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], whether for themselves or a family member. It offers preliminary guidance based on self-reported symptoms, medical history, and prescription details. It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you do not share any personal identifiable information. Always seek immediate help from qualified healthcare professionals in case of a medical emergency._")
+st.caption("Disclaimer: _This tool is designed strictly as an :red[emergency guide] for individuals navigating a :red[mental health medical emergency], for themselves or a family member. It offers basic guidance based on self-reported symptoms, medical history, and prescription details. It is not intended to replace professional medical advice, diagnosis, or treatment. Use this tool responsibly and do not rely solely on its output for critical decisions. Please ensure that you :red[Do not share personal identifiable information]._")
 st.write("---")
 
 
@@ -292,10 +292,10 @@ top_50_cities = [
     "Jodhpur", "Madurai", "Raipur", "Kota", "Chandigarh", "Guwahati"
 ]
 
-st.header("Therapist/Practitioner Feedback Form")
+st.subheader("Practitioner Feedback")
 
 with st.form("feedback_form", clear_on_submit=True):
-    name = st.text_input("Name of Practitioner/Clinic/Hospital [Required]")
+    name = st.text_input("Name of Practitioner or Clinic/Hospital [Required]")
     
     practitioner_type = st.selectbox(
         "Type of Practitioner",
@@ -309,7 +309,7 @@ with st.form("feedback_form", clear_on_submit=True):
     good_listener = st.slider("Good listener, gives time and attention [Required]", 0, 5, 3)
     brings_results = st.slider("Brings Results [Required]", 0, 5, 3)
     easy_to_reach = st.select_slider(
-        "Easy to reach, available [Required] (or NA)",
+        "Easy to reach, available [Required]",
         options=[0, 1, 2, 3, 4, 5, "NA"],
         value=3
     )
@@ -341,14 +341,14 @@ with st.form("feedback_form", clear_on_submit=True):
             except Exception as e:
                 st.error(f"Error saving feedback: {e}")
 
-
+st.write("---")
 # -------------------------------------------------------
 # --- DIRECTORIES & RESOURCES ---
 # -------------------------------------------------------
 
 col1_directory, col2_directory = st.columns(2)
 with col1_directory:
-    st.header("👩🏻‍⚕️ Doctors Directory", anchor = "doctors-directory")
+    st.header("👩🏻‍⚕️ Find Doctors", anchor = "doctors-directory")
     # st.subheader("Doctors Directory")
 
 with col2_directory:
@@ -366,6 +366,7 @@ with col1_resources:
 with col2_resources:
     st.link_button("Essential elder care checklist", "https://www.talkspace.com/blog/aging-parents-checklist/", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("Mental Health First Aid Guidelines", "https://mhfainternational.org/guidelines/", icon=None, type="secondary", disabled=False, use_container_width=True)
+    st.link_button("Our Articles", "https://www.talkspace.com/blog/aging-parents-checklist/", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("strategies to support parents mental-health for NRIs", "https://www.nilacares.com/blogs/6-effective-strategies-for-nri-children-to-support-their-parents-mental-health-in-india", icon=None, type="secondary", disabled=False, use_container_width=True)
     st.link_button("Know your medical prescription", "https://www.1mg.com/articles/know-your-medical-prescription/?srsltid=AfmBOopqxCbk5Kph2oWEQfnQvSvAwuZSTpOzHJ-MPBspQr9JhQ6J59b8", icon=None, type="secondary", disabled=False, use_container_width=True)
 
@@ -377,13 +378,13 @@ st.write("---")
 
 st.subheader("About Us")
 st.write(
-    "I’ve always had a personal connection to mental health. Growing up, I experienced firsthand the impact of mental illness when my mother, a respected teacher, suffered a sudden attack amid old-school politics. I was in class 10 during my boards, and that long night rushing to the hospital changed everything. In the years that followed, I learned how mental illness can change a person, even when it starts with something as simple as an unexpected health scare.\n"
+    "Growing up, I experienced firsthand the impact of mental illness in my family between old-school work politics. I was in class 10 during my boards, and one long night of rushing to the hospital changed everything. In the years that followed, I learned how mental illness can change a person, and how to truly navigate the tricky landscape of elders mental health in our society.\n"
     "\n"
-    "I went on to study engineering and then Data, spending over a decade in the field of products, strategy, and business. But my journey through user behaviour and data science led me to understanding psychology and mental health. Through the ups and downs of life, I have witnessed the challenges many older adults face. I’ve seen parents struggling with mental health disorders, dealing with confusing prescriptions, mixed medications, and new issues brought on by modern life: screen addiction, loneliness, depression, post-retirement challenges, and even the risks of scams.\n"
+    "My journey through user behaviour and data science over a decade in the field of products and strategy led me to deepen my understanding of psychology of mental health. I’ve seen parents dealing with confusing prescriptions and access to a good doctors amid new issues brought on by modern life: screen addiction, loneliness, depression, post-retirement challenges, and even the risks of monetary scams.\n"
     "\n"
-    "This initiative is my simple effort to help adults take care of their parents’ mental health. I understand how important it is to have accessible and reliable support, especially when finding the right doctor or getting a second opinion feels overwhelming. That’s why I have put together a toolkit that includes easy-to-use tools like a prescription explainer and an SOS chat for moments of crisis, along with practical checklists for daily care routines.\n"
+    " It is important to have accessible and reliable doctors and basic understanding of the treatment. That’s why I have put together a toolkit that includes easy-to-use tools like a prescription explainer, an SOS chat for moments of crisis, and a Doctors review collection to later use it as trusted directory \n"
     "\n"
-    "Whether you’re balancing a career while caring for aging parents or supporting them from afar as living abroad- Join me in creating a community to learn from experiences, and find trusted help. Subscribe to our monthly newsletter for updates and helpful tips. Together, we can look after the mental health of our loved ones—because caring for our parents is something we all share ❤️."
+    "This initiative is my simple effort to help us adults take care of our parents’ mental health. While balancing a career, caring for aging parents from as afar as living abroad- Join me to learn from our experiences and find trusted help ❤️."
 )
 
 st.write("---")
@@ -394,7 +395,7 @@ st.write("---")
 
 st.subheader("Connect with us:")
 
-substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
+substack_html = """<iframe src="https://drainedbrains.substack.com/embed" width=100% height="150" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>"""
 st.markdown(substack_html, unsafe_allow_html=True)
 st.write("\n ")
 st.write("\n ")
@@ -402,13 +403,15 @@ st.write(" \n\n Scan to stay connected with :blue[with our community] :sunglasse
 
 col_substack_2, col_insta = st.columns(2)
 with col_substack_2:
-    st.link_button("Blog and Newsletter", "https://drainedbrains.substack.com/", icon="📣", type="secondary", disabled=False, use_container_width=True)
-    st.image("directory/sub_qrcode.svg", width=None, use_container_width=True)
+    st.link_button("Join Newsletter", "https://drainedbrains.substack.com/", icon="📣", type="primary", disabled=False, use_container_width=False)
+    st.image("directory/sub_qrcode.svg", width=150, use_container_width=False)
 
 with col_insta:
-    st.link_button("Instagram", "https://www.instagram.com/unsubscription.society/?hl=en", icon="🎭", type="secondary", disabled=False, use_container_width=True)
-    st.image("directory/download.png", width=None, use_container_width=True)
+    st.link_button("Instagram", "https://www.instagram.com/unsubscription.society/?hl=en", icon="🎭", type="secondary", disabled=False, use_container_width=False)
+    st.image("directory/download.png", width=150, use_container_width=False)
 
+# --- FOOTER LINKS ---
+st.write("---")
 
 with st.popover("Archive"):
     st.markdown("📊 Stats")
@@ -422,9 +425,7 @@ if name == apass:
     st.table(df2)    
 
 else:
-    st.write("Insights Coming soon")
+    pass
 
-# --- FOOTER LINKS ---
-st.write("---")
 st.link_button("Contact me", "mailto:vashist.anupam@gmail.com", icon="📩", type="secondary", disabled=False, use_container_width=False)
 st.link_button("Disclaimer and TC", "https://drainedbrains.substack.com/p/terms-of-usage", icon="⁉️", type="secondary", disabled=False, use_container_width=False)
