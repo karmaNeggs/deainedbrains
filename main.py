@@ -87,6 +87,8 @@ prescription_text = st.text_area("Summarize your symptoms and enter exact prescr
 #     type=["jpg", "jpeg", "png", "HEIC", "heic"]
 # )
 
+uploaded_image = None
+
 if st.button("Submit"):
     # (1) Extract text from image if provided
     
@@ -192,7 +194,7 @@ if "sos_chat_history" not in st.session_state:
 
 with chat_input_box:
 
-    if prompt := st.chat_input("Example: Elder having severe psychosis in Delhi, find me a good doctor"):
+    if prompt := st.text_area("Example: Elder having severe psychosis in Delhi, find me a good doctor"):
         messages.chat_message("user").write(prompt)
 
         # (3) Call your LLM
@@ -248,6 +250,8 @@ with chat_input_box:
             
         except Exception as e:
             st.error(f"Error calling the AI API: {e}")
+            
+st.button("Ask")
 
 
 if st.session_state.tool_feedback == "SOS":
@@ -409,7 +413,6 @@ with col2_resources:
     st.link_button("Know your medical prescription", "https://www.1mg.com/articles/know-your-medical-prescription/?srsltid=AfmBOopqxCbk5Kph2oWEQfnQvSvAwuZSTpOzHJ-MPBspQr9JhQ6J59b8", icon=None, type="secondary", disabled=False, use_container_width=True)
 
 
-# --- FOOTER LINKS ---
 st.write("---")
 
 with st.popover("Archive"):
