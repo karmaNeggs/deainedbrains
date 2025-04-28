@@ -431,3 +431,17 @@ else:
 
 st.link_button("Contact me", "mailto:vashist.anupam@gmail.com", icon="📩", type="secondary", disabled=False, use_container_width=False)
 st.link_button("Disclaimer and TC", "https://drainedbrains.substack.com/p/terms-of-usage", icon="⁉️", type="secondary", disabled=False, use_container_width=False)
+
+
+st.markdown(
+    """
+    <style>
+    .css-1jc7ptx, .e1ewe7hr3, .viewerBadge_container__1QSob,
+    .styles_viewerBadge__1yB5_, .viewerBadge_link__1S137,
+    .viewerBadge_text__1JaDK {
+        display: none;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
